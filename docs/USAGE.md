@@ -103,9 +103,11 @@ Uses `get_submission` to check submission status and grade.
 
 ```
 Show me my recent Canvas messages
+Show unread messages
+List starred conversations
 ```
 
-Uses `list_conversations` to display your inbox.
+Uses `list_conversations` with optional scope parameter to display your inbox.
 
 ### Send a Message
 
@@ -115,6 +117,17 @@ and body "Can you clarify the requirements for the essay?"
 ```
 
 Uses `create_conversation` to send messages.
+
+### Manage Conversations
+
+```
+Mark conversation 123 as read
+Star conversation 456
+Archive conversation 789
+Delete conversation 999
+```
+
+Uses various conversation management tools to organize your inbox.
 
 ### View Calendar
 
@@ -170,10 +183,16 @@ Uses `search_course_users` to locate people in your course.
 - `submit_assignment` - Submit work (text, URL, or files)
 
 ### Messaging
-- `list_conversations` - Inbox messages
-- `get_conversation` - Message thread details
-- `create_conversation` - Send new message
+- `list_conversations` - Inbox messages (supports filtering by scope)
+- `get_conversation` - Message thread details (auto-marks as read)
+- `create_conversation` - Send new message (supports group conversations)
 - `reply_to_conversation` - Reply to existing message
+- `mark_conversation_read` - Mark message as read
+- `mark_conversation_unread` - Mark message as unread
+- `star_conversation` - Star important messages
+- `unstar_conversation` - Remove star from messages
+- `archive_conversation` - Archive messages
+- `delete_conversation` - Delete messages permanently
 
 ### Calendar & Planning
 - `list_calendar_events` - Calendar events in date range

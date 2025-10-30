@@ -2,6 +2,45 @@
 
 All notable changes to the Canvas MCP Server will be documented in this file.
 
+## [1.1.0] - 2025-10-30
+
+### Enhanced
+
+#### Messaging & Conversations (6 new tools)
+
+**Enhanced Existing Tools**
+- `list_conversations` - Added `scope` parameter to filter by inbox, unread, starred, sent, or archived
+- `get_conversation` - Now automatically marks conversation as read when viewed
+- `create_conversation` - Added `group_conversation` parameter for group messaging
+
+**New Conversation Management Tools**
+- `mark_conversation_read` - Mark conversations as read
+- `mark_conversation_unread` - Mark conversations as unread
+- `star_conversation` - Star important conversations
+- `unstar_conversation` - Remove star from conversations
+- `archive_conversation` - Archive conversations
+- `delete_conversation` - Permanently delete conversations
+
+#### Documentation
+- Updated TOOLS.md with new conversation management features
+- Enhanced USAGE.md with conversation management examples
+- Updated README to reflect 31 total tools (up from 25)
+- Added comprehensive documentation for all conversation scopes and features
+
+#### API Client Improvements
+- Enhanced conversation filtering with scope support
+- Added conversation state management (read/unread/archived)
+- Added conversation starring functionality
+- Added conversation deletion support
+- Improved API parameter handling for group conversations
+- Better alignment with Canvas API conversation endpoints
+
+### Technical Details
+- All quality gates pass (lint, typecheck, test, build)
+- Maintained backward compatibility with existing tools
+- Zero breaking changes to existing API
+- Enhanced type safety for conversation operations
+
 ## [1.0.0] - 2025-10-30
 
 ### Added
@@ -12,7 +51,7 @@ All notable changes to the Canvas MCP Server will be documented in this file.
 - Bun runtime support for fast execution
 - Complete build and development tooling
 
-#### MCP Tools (25 total)
+#### MCP Tools (25 initial tools)
 
 **User & Authentication**
 - `get_current_user` - Retrieve current user profile

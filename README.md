@@ -6,12 +6,12 @@ A Model Context Protocol server providing comprehensive access to Canvas LMS for
 
 ## Features
 
-Access Canvas LMS functionality through 25 MCP tools:
+Access Canvas LMS functionality through 31 MCP tools:
 
 - **Courses**: List and view course information
 - **Assignments**: Browse, view details, check submissions, and submit work
 - **Grades**: View grades for individual courses or across all courses
-- **Messaging**: Send and receive conversations with instructors and peers
+- **Messaging**: Send and receive messages, manage conversations (read/unread, star, archive, delete)
 - **Calendar**: View events and upcoming deadlines
 - **To-Do Lists**: Track pending tasks and assignments
 - **Modules**: Navigate course content structure

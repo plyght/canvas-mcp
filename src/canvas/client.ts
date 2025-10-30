@@ -167,27 +167,40 @@ export class CanvasClient {
     return response.data;
   }
 
-  async getConversations() {
+  async getConversations(scope: "inbox" | "unread" | "starred" | "sent" | "archived" = "inbox") {
     const response = await this.client.get<Conversation[]>("/api/v1/conversations", {
       params: {
-        scope: "inbox",
+        scope,
         per_page: 50,
+        include_all_conversation_ids: false,
       },
     });
     return response.data;
   }
 
   async getConversation(conversationId: number) {
-    const response = await this.client.get(`/api/v1/conversations/${conversationId}`);
+    const response = await this.client.get(`/api/v1/conversations/${conversationId}`, {
+      params: {
+        auto_mark_as_read: true,
+      },
+    });
     return response.data;
   }
 
-  async createConversation(recipients: string[], subject: string, body: string, courseId?: number) {
+  async createConversation(
+    recipients: string[],
+    subject: string,
+    body: string,
+    courseId?: number,
+    groupConversation: boolean = false
+  ) {
     const response = await this.client.post("/api/v1/conversations", {
       recipients,
       subject,
       body,
       context_code: courseId ? `course_${courseId}` : undefined,
+      group_conversation: groupConversation,
+      force_new: true,
     });
     return response.data;
   }
@@ -196,6 +209,56 @@ export class CanvasClient {
     const response = await this.client.post(`/api/v1/conversations/${conversationId}/add_message`, {
       body,
     });
+    return response.data;
+  }
+
+  async markConversationAsRead(conversationId: number) {
+    const response = await this.client.put(`/api/v1/conversations/${conversationId}`, {
+      conversation: {
+        workflow_state: "read",
+      },
+    });
+    return response.data;
+  }
+
+  async markConversationAsUnread(conversationId: number) {
+    const response = await this.client.put(`/api/v1/conversations/${conversationId}`, {
+      conversation: {
+        workflow_state: "unread",
+      },
+    });
+    return response.data;
+  }
+
+  async starConversation(conversationId: number) {
+    const response = await this.client.put(`/api/v1/conversations/${conversationId}`, {
+      conversation: {
+        starred: true,
+      },
+    });
+    return response.data;
+  }
+
+  async unstarConversation(conversationId: number) {
+    const response = await this.client.put(`/api/v1/conversations/${conversationId}`, {
+      conversation: {
+        starred: false,
+      },
+    });
+    return response.data;
+  }
+
+  async archiveConversation(conversationId: number) {
+    const response = await this.client.put(`/api/v1/conversations/${conversationId}`, {
+      conversation: {
+        workflow_state: "archived",
+      },
+    });
+    return response.data;
+  }
+
+  async deleteConversation(conversationId: number) {
+    const response = await this.client.delete(`/api/v1/conversations/${conversationId}`);
     return response.data;
   }
 

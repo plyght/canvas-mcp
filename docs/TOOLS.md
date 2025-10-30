@@ -169,7 +169,10 @@ Submit URL "https://example.com/project" for assignment 5678
 
 List all conversations (messages) in the user's inbox.
 
-**Parameters:** None
+**Parameters:**
+- `scope` (optional, string) - Filter conversations by scope
+  - Default: `"inbox"`
+  - Options: `"inbox"`, `"unread"`, `"starred"`, `"sent"`, `"archived"`
 
 **Returns:** Array of conversation objects
 
@@ -177,6 +180,9 @@ List all conversations (messages) in the user's inbox.
 ```
 Show me my Canvas messages
 List my inbox conversations
+Show me unread messages
+List starred conversations
+Show sent messages
 ```
 
 **Response includes per conversation:**
@@ -189,7 +195,7 @@ List my inbox conversations
 
 ### get_conversation
 
-Get full details about a specific conversation thread.
+Get full details about a specific conversation thread. This will automatically mark the conversation as read.
 
 **Parameters:**
 - `conversation_id` (required, number) - The ID of the conversation
@@ -200,6 +206,7 @@ Get full details about a specific conversation thread.
 ```
 Show conversation 9876
 Get details of message thread 9876
+Read message 9876
 ```
 
 ### create_conversation
@@ -212,6 +219,9 @@ Create a new conversation (send a message).
 - `subject` (required, string) - Message subject
 - `body` (required, string) - Message body
 - `course_id` (optional, number) - Course to associate with
+- `group_conversation` (optional, boolean) - Create as group conversation
+  - Default: `false`
+  - When `true`, all recipients can see each other and reply to all
 
 **Returns:** Created conversation object
 
@@ -219,6 +229,7 @@ Create a new conversation (send a message).
 ```
 Send a message to user_123 with subject "Question" and body "Can you help?"
 Create conversation with user_456 about homework
+Send group message to user_123 and user_456 with subject "Team Meeting"
 ```
 
 ### reply_to_conversation
@@ -234,6 +245,95 @@ Reply to an existing conversation.
 **Example Usage:**
 ```
 Reply to conversation 9876 with "Thank you!"
+```
+
+### mark_conversation_read
+
+Mark a conversation as read.
+
+**Parameters:**
+- `conversation_id` (required, number) - The ID of the conversation
+
+**Returns:** Updated conversation object
+
+**Example Usage:**
+```
+Mark conversation 9876 as read
+```
+
+### mark_conversation_unread
+
+Mark a conversation as unread.
+
+**Parameters:**
+- `conversation_id` (required, number) - The ID of the conversation
+
+**Returns:** Updated conversation object
+
+**Example Usage:**
+```
+Mark conversation 9876 as unread
+Keep conversation 9876 unread
+```
+
+### star_conversation
+
+Star a conversation for easy access and reference.
+
+**Parameters:**
+- `conversation_id` (required, number) - The ID of the conversation
+
+**Returns:** Updated conversation object
+
+**Example Usage:**
+```
+Star conversation 9876
+Mark conversation 9876 as important
+```
+
+### unstar_conversation
+
+Remove star from a conversation.
+
+**Parameters:**
+- `conversation_id` (required, number) - The ID of the conversation
+
+**Returns:** Updated conversation object
+
+**Example Usage:**
+```
+Unstar conversation 9876
+Remove star from conversation 9876
+```
+
+### archive_conversation
+
+Archive a conversation to remove it from inbox view.
+
+**Parameters:**
+- `conversation_id` (required, number) - The ID of the conversation
+
+**Returns:** Updated conversation object
+
+**Example Usage:**
+```
+Archive conversation 9876
+Move conversation 9876 to archive
+```
+
+### delete_conversation
+
+Permanently delete a conversation.
+
+**Parameters:**
+- `conversation_id` (required, number) - The ID of the conversation
+
+**Returns:** Deletion confirmation
+
+**Example Usage:**
+```
+Delete conversation 9876
+Remove conversation 9876 permanently
 ```
 
 ---

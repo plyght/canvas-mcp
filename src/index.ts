@@ -149,7 +149,14 @@ const tools: Tool[] = [
     description: "List all conversations (messages) in the user's inbox",
     inputSchema: {
       type: "object",
-      properties: {},
+      properties: {
+        scope: {
+          type: "string",
+          description: "Filter conversations by scope (inbox, unread, starred, sent, archived)",
+          default: "inbox",
+          enum: ["inbox", "unread", "starred", "sent", "archived"],
+        },
+      },
     },
   },
   {
@@ -189,6 +196,11 @@ const tools: Tool[] = [
           type: "number",
           description: "Optional course ID to associate with the conversation",
         },
+        group_conversation: {
+          type: "boolean",
+          description: "Create as a group conversation (all recipients can see each other)",
+          default: false,
+        },
       },
       required: ["recipients", "subject", "body"],
     },
@@ -209,6 +221,90 @@ const tools: Tool[] = [
         },
       },
       required: ["conversation_id", "body"],
+    },
+  },
+  {
+    name: "mark_conversation_read",
+    description: "Mark a conversation as read",
+    inputSchema: {
+      type: "object",
+      properties: {
+        conversation_id: {
+          type: "number",
+          description: "The ID of the conversation",
+        },
+      },
+      required: ["conversation_id"],
+    },
+  },
+  {
+    name: "mark_conversation_unread",
+    description: "Mark a conversation as unread",
+    inputSchema: {
+      type: "object",
+      properties: {
+        conversation_id: {
+          type: "number",
+          description: "The ID of the conversation",
+        },
+      },
+      required: ["conversation_id"],
+    },
+  },
+  {
+    name: "star_conversation",
+    description: "Star a conversation for easy access",
+    inputSchema: {
+      type: "object",
+      properties: {
+        conversation_id: {
+          type: "number",
+          description: "The ID of the conversation",
+        },
+      },
+      required: ["conversation_id"],
+    },
+  },
+  {
+    name: "unstar_conversation",
+    description: "Remove star from a conversation",
+    inputSchema: {
+      type: "object",
+      properties: {
+        conversation_id: {
+          type: "number",
+          description: "The ID of the conversation",
+        },
+      },
+      required: ["conversation_id"],
+    },
+  },
+  {
+    name: "archive_conversation",
+    description: "Archive a conversation",
+    inputSchema: {
+      type: "object",
+      properties: {
+        conversation_id: {
+          type: "number",
+          description: "The ID of the conversation",
+        },
+      },
+      required: ["conversation_id"],
+    },
+  },
+  {
+    name: "delete_conversation",
+    description: "Delete a conversation permanently",
+    inputSchema: {
+      type: "object",
+      properties: {
+        conversation_id: {
+          type: "number",
+          description: "The ID of the conversation",
+        },
+      },
+      required: ["conversation_id"],
     },
   },
   {
@@ -513,7 +609,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       case "list_conversations": {
-        const conversations = await canvasClient.getConversations();
+        const scope =
+          (args?.scope as "inbox" | "unread" | "starred" | "sent" | "archived") || "inbox";
+        const conversations = await canvasClient.getConversations(scope);
         return {
           content: [
             {
@@ -542,12 +640,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const subject = args?.subject as string;
         const body = args?.body as string;
         const courseId = args?.course_id as number | undefined;
+        const groupConversation = (args?.group_conversation as boolean) || false;
 
         const conversation = await canvasClient.createConversation(
           recipients,
           subject,
           body,
-          courseId
+          courseId,
+          groupConversation
         );
         return {
           content: [
@@ -568,6 +668,84 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             {
               type: "text",
               text: JSON.stringify(conversation, null, 2),
+            },
+          ],
+        };
+      }
+
+      case "mark_conversation_read": {
+        const conversationId = args?.conversation_id as number;
+        const conversation = await canvasClient.markConversationAsRead(conversationId);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(conversation, null, 2),
+            },
+          ],
+        };
+      }
+
+      case "mark_conversation_unread": {
+        const conversationId = args?.conversation_id as number;
+        const conversation = await canvasClient.markConversationAsUnread(conversationId);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(conversation, null, 2),
+            },
+          ],
+        };
+      }
+
+      case "star_conversation": {
+        const conversationId = args?.conversation_id as number;
+        const conversation = await canvasClient.starConversation(conversationId);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(conversation, null, 2),
+            },
+          ],
+        };
+      }
+
+      case "unstar_conversation": {
+        const conversationId = args?.conversation_id as number;
+        const conversation = await canvasClient.unstarConversation(conversationId);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(conversation, null, 2),
+            },
+          ],
+        };
+      }
+
+      case "archive_conversation": {
+        const conversationId = args?.conversation_id as number;
+        const conversation = await canvasClient.archiveConversation(conversationId);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(conversation, null, 2),
+            },
+          ],
+        };
+      }
+
+      case "delete_conversation": {
+        const conversationId = args?.conversation_id as number;
+        const result = await canvasClient.deleteConversation(conversationId);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(result, null, 2),
             },
           ],
         };
