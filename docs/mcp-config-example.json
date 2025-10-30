@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "canvas": {
+      "command": "bun",
+      "args": ["run", "/absolute/path/to/canvas/src/index.ts"],
+      "env": {
+        "CANVAS_BASE_URL": "https://your-institution.instructure.com",
+        "CANVAS_ACCESS_TOKEN": "your_access_token_here"
+      }
+    }
+  }
+}
+
